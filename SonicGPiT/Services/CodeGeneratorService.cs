@@ -13,14 +13,19 @@ public class CodeGeneratorService : ICodeGeneratorService
         _codeGenerationStrategyFactory = codeGenerationStrategyFactory;
     }
 
-    public async Task<CodeResponse> GenerateRequest(CodeRequest codeRequest)
+    public async Task<BackendResponse<CodeResponse>> GenerateRequest(CodeRequest codeRequest)
     {
+        var backendResponse = new BackendResponse<CodeResponse>();
+
         var strategy = _codeGenerationStrategyFactory.Create(codeRequest);
 
-        var response = await strategy.GenerateCode(codeRequest);
-        
-        response.GeneratedCode = SonicPiCodeCleaner.CleanStringForSonicPiInput(response.GeneratedCode);
+        var codeResponse = await strategy.GenerateCode(codeRequest);
 
-        return response;
+        codeResponse.GeneratedCode = SonicPiCodeCleaner.CleanStringForSonicPiInput(codeResponse.GeneratedCode);
+
+        backendResponse.IsSuccess = true;
+        backendResponse.Data = codeResponse;
+
+        return backendResponse;
     }
 }

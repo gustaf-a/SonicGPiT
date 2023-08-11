@@ -17,9 +17,14 @@ public class CodeController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<CodeResponse> GenerateCodeRequest([FromBody] CodeRequest codeRequest)
+    public async Task<IActionResult> GenerateCodeRequest([FromBody] CodeRequest codeRequest)
     {
-        return await _codeGeneratorService.GenerateRequest(codeRequest);
+        var backendResponse = await _codeGeneratorService.GenerateRequest(codeRequest);
+        
+        if (!backendResponse.IsSuccess)
+            return StatusCode(500, backendResponse);
+
+        return Ok(backendResponse);
     }
 
     [HttpGet("strategies")]

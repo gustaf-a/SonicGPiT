@@ -2,6 +2,7 @@ class CodeRequest {
 	public currentCode: string;
 	public generationMethod: string;
 	public userInput: string;
+	public useExpensiveModel?: boolean;
 
 	constructor() {
 		this.currentCode = "";

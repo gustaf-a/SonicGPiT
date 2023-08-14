@@ -9,10 +9,11 @@ import CodeRequest from "@/model/CodeRequest";
 import CodeResponse from "@/model/CodeResponse";
 
 const codegenerationsStore = useCodeGenerationsStore();
-const { generationStrategies, loading, generatingCode, errorMessages } = storeToRefs(codegenerationsStore);
+const { generationStrategies, loading, generatingCode, errorMessages } =
+	storeToRefs(codegenerationsStore);
 
-const fetchStrategies = async () => {    
-    try {
+const fetchStrategies = async () => {
+	try {
 		await codegenerationsStore.getGenerationStrategiesAsync();
 	} catch (error) {
 		console.error(error);
@@ -31,19 +32,21 @@ interface FormState {
 	newCode: string;
 	inputText: string;
 	strategy: string;
+	useExpensiveModel: boolean;
 }
 
 const formState = reactive<FormState>({
 	currentCode: "",
 	newCode: "",
 	inputText: "",
-	strategy: ""
+	strategy: "",
+	useExpensiveModel: false
 });
 
 const formRef = ref<FormInstance>();
 
 const rules: Record<string, Rule[]> = {
-	inputText: [{ required: true, message: "Input text is required." }]
+	inputText: [{ required: true, message: "Input text is required." }],
 };
 
 const onValidationFailed = (errorInfo: any) => {
@@ -61,8 +64,10 @@ const submitForm = async () => {
 		return;
 	}
 
-    try {
-		const newCode = await codegenerationsStore.generateCodeWithStrategy(codeRequest);
+	try {
+		const newCode = await codegenerationsStore.generateCodeWithStrategy(
+			codeRequest
+		);
 
 		formState.newCode = newCode;
 	} catch (error) {
@@ -77,37 +82,31 @@ function getCodeRequest(form: FormState): CodeRequest {
 	codeRequest.currentCode = form.currentCode;
 	codeRequest.generationMethod = form.strategy;
 	codeRequest.userInput = form.inputText;
+	codeRequest.useExpensiveModel = form.useExpensiveModel;
 
 	return codeRequest;
-}
-
-function clearValues() {
-	formState.currentCode = "";
-	formState.inputText = "";
-	formState.newCode = "";
 }
 
 async function copyAndMoveUp() {
 	try {
 		await navigator.clipboard.writeText(formState.newCode);
 
-		NotificationSuccess(
-			"Code Copied!",
-			`Code copied to clipboard`
-		);
+		NotificationSuccess("Code Copied!", `Code copied to clipboard`);
 
 		formState.currentCode = formState.newCode;
 		formState.newCode = "";
 	} catch (err) {
-		console.error('Failed to copy text: ', err);
-		NotificationError("Failed copy code", `Code couldn't be copied to clipboard.`);
+		console.error("Failed to copy text: ", err);
+		NotificationError(
+			"Failed copy code",
+			`Code couldn't be copied to clipboard.`
+		);
 	}
 }
-
 </script>
 
 <template>
-    <div>
+	<div>
 		<a-form
 			:model="formState"
 			:rules="rules"
@@ -147,23 +146,21 @@ async function copyAndMoveUp() {
 					</a-form-item>
 				</a-col>
 			</a-row>
-            <a-row>
-                <div v-if="errorMessages.values.length > 0">
-                    <p v-for="msg in errorMessages">
-                        {{ msg }}
-                    </p>
-                </div>
-            </a-row>
+			<a-row>
+				<div v-if="errorMessages.values.length > 0">
+					<p v-for="msg in errorMessages">
+						{{ msg }}
+					</p>
+				</div>
+			</a-row>
 			<a-row>
 				<a-col :span="16">
 					<div class="form-buttons">
+						<p class="keep-values-label">Use expensive model</p>
 						<a-form-item>
-							<a-button
-								class="form-button"
-								@click="clearValues"
-								>Clear</a-button
-							>
+							<a-switch v-model:checked="formState.useExpensiveModel" />
 						</a-form-item>
+
 						<a-form-item>
 							<a-button
 								type="primary"
@@ -205,25 +202,18 @@ async function copyAndMoveUp() {
 		</a-form>
 	</div>
 
-    //div with 
-
-    Loading: {{ loading }}
-    
-	GeneratingCode: {{ generatingCode }}
-
-    Strategies: {{ generationStrategies }}
-    
-	ErrorMessages: {{ errorMessages }}
-
-
-	//TODO add form for input of information //use codegeneration store to submit
-	info to backend
+ 	<p>
+		 Loading: {{ loading }}
+	</p>
+	<p>
+		GeneratingCode: {{ generatingCode }}
+	</p>
+	<p>
+		ErrorMessages: {{ errorMessages }}
+	</p>
 </template>
 
-
 <style scoped>
-
-
 .form-buttons {
 	display: flex;
 	justify-content: end;

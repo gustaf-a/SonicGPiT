@@ -4,10 +4,9 @@ namespace Shared.Prompts;
 
 public interface IPromptBuilder
 {
-    public Prompt GetPrompt();
+    public Prompt GetPrompt(bool? useExpensiveModel);
 
-    public void AddModel(string model);
-    public string GetModel();
+    public string GetModel(bool? useExpensiveModel);
 
     public void AddSystemMessage(string systemPrompt);
     public void AddUserMessage(string userPrompt);

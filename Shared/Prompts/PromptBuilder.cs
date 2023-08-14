@@ -13,29 +13,30 @@ public class PromptBuilder : IPromptBuilder
     private readonly List<PromptMessage> _promptMessages = new();
     private readonly List<PromptFunction> _promptFunctions = new();
 
-    private string _model;
-
     public PromptBuilder(IOptions<OpenAiOptions> openAiOptions, IOptions<FeatureFlagsOptions> featureFlagsOptions)
     {
         _openAiOptions = openAiOptions.Value;
+
+        if(_openAiOptions is null)
+            throw new ArgumentNullException(nameof(openAiOptions));
+
         _featureFlagOptions = featureFlagsOptions.Value;
     }
 
     public void Reset()
     {
-        _model = string.Empty;
         _promptFunctions.Clear();
         _promptMessages.Clear();  
     }
 
-    public Prompt GetPrompt()
+    public Prompt GetPrompt(bool? useExpensiveModel = null)
     {
         if (_promptMessages.IsNullOrEmpty())
             throw new ArgumentNullException(nameof(_promptMessages), $"Invalid prompt: systemPrompt and userPrompt both empty");
 
         var prompt = new Prompt
         {
-            Model = GetModel(),
+            Model = GetModel(useExpensiveModel),
             Messages = _promptMessages,
             Functions = _promptFunctions,
             FunctionCall = GetFunctionCall()
@@ -44,14 +45,11 @@ public class PromptBuilder : IPromptBuilder
         return prompt;
     }
 
-    public string GetModel()
+    public string GetModel(bool? useExpensiveModel)
     {
-        if (!string.IsNullOrWhiteSpace(_model))
-            return _model;
-
-        if(_featureFlagOptions.UseExpensiveAiModel)
+        if(useExpensiveModel ?? _featureFlagOptions.UseExpensiveAiModel)
         {
-            if (!string.IsNullOrWhiteSpace(_openAiOptions.ApiModelExpensive))
+            if (string.IsNullOrWhiteSpace(_openAiOptions.ApiModelExpensive))
                 throw new ArgumentNullException(nameof(_openAiOptions.ApiModelExpensive));
 
             return _openAiOptions.ApiModelExpensive;
@@ -61,14 +59,6 @@ public class PromptBuilder : IPromptBuilder
             throw new ArgumentNullException(nameof(_openAiOptions.ApiModelBase));
 
         return _openAiOptions.ApiModelBase;
-    }
-
-    public void AddModel(string model)
-    {
-        if (string.IsNullOrWhiteSpace(model))
-            throw new ArgumentNullException(nameof(model));
-
-        _model = model;
     }
 
     public void AddFunctionCalls(List<PromptFunction> promptFunctions)

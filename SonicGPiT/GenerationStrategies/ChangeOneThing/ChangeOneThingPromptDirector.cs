@@ -28,7 +28,7 @@ public class ChangeOneThingPromptDirector : IChangeOneThingPromptDirector
 
         _promptBuilder.AddUserMessage(GetUserMessage(codeRequest));
 
-        return _promptBuilder.GetPrompt();
+        return _promptBuilder.GetPrompt(codeRequest.UseExpensiveModel);
     }
 
     private string GetSystemMessage(CodeRequest codeRequest)

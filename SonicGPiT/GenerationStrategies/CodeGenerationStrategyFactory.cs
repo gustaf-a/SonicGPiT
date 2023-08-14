@@ -27,6 +27,7 @@ public class CodeGenerationStrategyFactory : ICodeGenerationStrategyFactory
 
         var defaultStrategy = _codeGenerationStrategies.Where(s => DefaultStrategyName.Equals(s.Name, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
 
-        return defaultStrategy ?? throw new Exception($"Failed to find default strategy corresponding to: {DefaultStrategyName}");
+        return defaultStrategy 
+            ?? throw new Exception($"Failed to find default strategy corresponding to: {DefaultStrategyName}");
     }
 }

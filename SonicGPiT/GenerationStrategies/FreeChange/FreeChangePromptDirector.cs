@@ -5,14 +5,14 @@ using Shared.Prompts;
 using SonicGPiT.Models;
 using System.Text;
 
-namespace SonicGPiT.GenerationStrategies.ChangeOneThing;
+namespace SonicGPiT.GenerationStrategies.FreeChange;
 
-public class ChangeOneThingPromptDirector : IChangeOneThingPromptDirector
+public class FreeChangePromptDirector : IFreeChangePromptDirector
 {
     private readonly IPromptBuilder _promptBuilder;
     private readonly CodeGenerationOptions _codeGenerationOptions;
 
-    public ChangeOneThingPromptDirector(IPromptBuilder promptBuilder, IOptions<CodeGenerationOptions> options)
+    public FreeChangePromptDirector(IPromptBuilder promptBuilder, IOptions<CodeGenerationOptions> options)
     {
         _promptBuilder = promptBuilder;
         _codeGenerationOptions = options.Value;
@@ -57,15 +57,13 @@ public class ChangeOneThingPromptDirector : IChangeOneThingPromptDirector
 
     private string SystemPrompt { get; set; } =
 """
-Your task is to modify Sonic Pi code according to input from a user.
-Only modify one part of the existing code.
+Your task is to modify and create Sonic Pi code according to input from a user.
 Use live loops where possible.
 
 Perform these steps: 
 1. Analyze the existing code to understand what feeling it has.
 2. Analyze the input and create a list of suggestions on how to change the existing code.
-3. List possible parts of the existing code that could be changed.
-4. Identify one single part to change and create the new code.
+3. Implement the changes.
 """;
 
     private string Functions { get; set; } =

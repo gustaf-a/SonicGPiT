@@ -4,6 +4,7 @@ using Shared.Configurations;
 using Shared.Prompts;
 using SonicGPiT.GenerationStrategies;
 using SonicGPiT.GenerationStrategies.ChangeOneThing;
+using SonicGPiT.GenerationStrategies.FreeChange;
 using SonicGPiT.Services;
 
 namespace SonicGPiT
@@ -25,6 +26,9 @@ namespace SonicGPiT
             builder.Services.AddSingleton<ICodeGeneratorService, CodeGeneratorService>();
             builder.Services.AddSingleton<ICodeGenerationStrategyFactory, CodeGenerationStrategyFactory>();
             
+            builder.Services.AddSingleton<ICodeGenerationStrategy, FreeChangeStrategy>();
+            builder.Services.AddSingleton<IFreeChangePromptDirector, FreeChangePromptDirector>();
+
             builder.Services.AddSingleton<ICodeGenerationStrategy, ChangeOneThingStrategy>();
             builder.Services.AddSingleton<IChangeOneThingPromptDirector, ChangeOneThingPromptDirector>();
 

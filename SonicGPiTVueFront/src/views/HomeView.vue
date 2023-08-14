@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import Container from "@/components/Container.vue";
+import CodeGenerationPage from "@/components/Content/CodeGeneration/CodeGenerationPage.vue";
+
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <Container>
+      <CodeGenerationPage />
+    </Container>
   </main>
 </template>

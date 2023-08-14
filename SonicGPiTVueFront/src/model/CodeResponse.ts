@@ -1,11 +1,11 @@
 class CodeResponse {
 	public isSuccess: boolean;
-	public GeneratedCode: string;
+	public generatedCode: string;
 	public errorMessages: string[];
 
 	constructor() {
 		this.isSuccess = false;
-		this.GeneratedCode = "";
+		this.generatedCode = "";
 		this.errorMessages = [];
 	}
 }

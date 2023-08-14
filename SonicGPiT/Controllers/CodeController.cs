@@ -30,6 +30,6 @@ public class CodeController : ControllerBase
     [HttpGet("strategies")]
     public async Task<IEnumerable<string>> GetAllCodeGenerationStrategies()
     {
-        return new List<string> { "ChangeOneThing" };
+       return new List<string> { "ChangeOneThing" };
     }
 }

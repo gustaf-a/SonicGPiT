@@ -21,7 +21,7 @@ public class CodeGeneratorService : ICodeGeneratorService
 
         var codeResponse = await strategy.GenerateCode(codeRequest);
 
-        codeResponse.GeneratedCode = SonicPiCodeCleaner.CleanStringForSonicPiInput(codeResponse.GeneratedCode);
+        //codeResponse.GeneratedCode = SonicPiCodeCleaner.CleanStringForSonicPiInput(codeResponse.GeneratedCode);        //codeResponse.GeneratedCode = SonicPiCodeCleaner.CleanStringForSonicPiInput(codeResponse.GeneratedCode);
 
         backendResponse.IsSuccess = true;
         backendResponse.Data = codeResponse;

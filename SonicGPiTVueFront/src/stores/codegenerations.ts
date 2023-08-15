@@ -55,8 +55,6 @@ export const useCodeGenerationsStore = defineStore("codegenerations", () => {
 		let codeResponse: CodeResponse | null = null;
 
 		try {
-			loading.value = true;
-
 			const backendResponse = await requestHandler<CodeResponse>(
 				{
 					method: "post",
@@ -83,7 +81,7 @@ export const useCodeGenerationsStore = defineStore("codegenerations", () => {
 				}`
 			);
 		} finally {
-			loading.value = false;
+			generatingCode.value = false;
 		}
 
 		return codeResponse?.generatedCode || "";
